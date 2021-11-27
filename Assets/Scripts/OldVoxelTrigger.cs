@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VoxelTrigger : MonoBehaviour
+public class OldVoxelTrigger : MonoBehaviour
 {
-    public Voxel AttachedVoxel;
+    public OldVoxel AttachedVoxel;
 }

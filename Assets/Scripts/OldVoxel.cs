@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Voxel
+public class OldVoxel
 {
-
-    #region public fields
-
-    //index can not be set outside of the scope of this class
+        //index can not be set outside of the scope of this class
     public Vector3Int Index { get; private set; }
+    public int lnc;
+    private GameObject _goVoxelTrigger;
+    private OldVoxelGrid _grid;
+    private bool _alive;
+
     public bool Alive
     {
         get
@@ -26,29 +28,30 @@ public class Voxel
         }
     }
 
-    #endregion
+    public static List<Vector3Int> Directions = new List<Vector3Int>
+    {
+        new Vector3Int(-1,0,0),// min x
+        new Vector3Int(1,0,0),// plus 
+        new Vector3Int(0,0,-1),// min z
+        new Vector3Int(0,0,1),// plus z
+        new Vector3Int(-1,0,1),// min x
+        new Vector3Int(1,0,1),// plus 
+        new Vector3Int(1,0,-1),// min z
+        new Vector3Int(-1,0,-1)// plus z
+    };
 
-    #region private fields
-    private GameObject _goVoxelTrigger;
-    private VoxelGrid _grid;
-    private bool _alive;
 
-    #endregion
-
-    #region constructors
-    public Voxel(int x, int y, int z, VoxelGrid grid)
+    public OldVoxel(int x, int y, int z, OldVoxelGrid grid, float prob)
     {
         Index = new Vector3Int(x, y, z);
         _grid = grid;
         
         CreateGameobject();
-        Alive = true;
+        Alive = Random.value < prob ? true : false;
+
     }
-    #endregion
 
-    #region public functions
-
-    public Voxel(Vector3Int index, VoxelGrid grid)
+    public OldVoxel(Vector3Int index, OldVoxelGrid grid)
     {
         Index = index;
         _grid = grid;
@@ -63,17 +66,17 @@ public class Voxel
         _goVoxelTrigger.tag = "Voxel";
         _goVoxelTrigger.transform.position = Index;
         _goVoxelTrigger.transform.localScale = Vector3.one * 0.95f;
-        VoxelTrigger trigger = _goVoxelTrigger.AddComponent<VoxelTrigger>();
+        OldVoxelTrigger trigger = _goVoxelTrigger.AddComponent<OldVoxelTrigger>();
         trigger.AttachedVoxel = this;
     }
 
-    public List<Voxel> GetNeighbourList()
+    public List<OldVoxel> GetNeighbourList()
     {
-        List<Voxel> neighbours = new List<Voxel>();
-        foreach (var direction in Util.Directions)
+        List<OldVoxel> neighbours = new List<OldVoxel>();
+        foreach (var direction in Directions)
         {
             Vector3Int neighbourIndex = Index + direction;
-            if (Util.CheckInBounds(_grid.GridDimensions, neighbourIndex))
+            if (OldVoxelGrid.CheckInBounds(_grid.GridDimensions, neighbourIndex))
             {
                 neighbours.Add(_grid.GetVoxelByIndex(neighbourIndex));
             }
@@ -84,7 +87,7 @@ public class Voxel
 
     public void ToggleNeighbours()
     {
-        List<Voxel> neighbours = GetNeighbourList();
+        List<OldVoxel> neighbours = GetNeighbourList();
 
         foreach (var neighbour in neighbours)
         {
@@ -92,5 +95,5 @@ public class Voxel
         }
     }
 
-    #endregion
+ 
 }

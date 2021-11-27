@@ -2,25 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VoxelGridManager : MonoBehaviour
+public class OldVoxelGridManager : MonoBehaviour
 {
     [SerializeField]
     private Vector3Int _gridDimensions = new Vector3Int(10, 1, 10);
+    private OldVoxelGrid _grid;
+    [SerializeField]
+    public float prob = 0.3f;
 
-    private VoxelGrid _grid;
-    // Start is called before the first frame update
     void Start()
     {
-        _grid = new VoxelGrid(_gridDimensions);
+        _grid = new OldVoxelGrid(_gridDimensions, prob);
     }
 
-    // Update is called once per frame
     void Update()
     {
         PerformRaycast();
+      
     }
 
-    private void PerformRaycast()
+    public void Auto()
+    {
+        StartCoroutine(Auto1());
+    }
+
+    public IEnumerator Auto1()
+    {
+		while (true)
+		{
+            Next();
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+
+
+    public void Next()
+    {
+        _grid.GOF();
+    }
+
+    public void PerformRaycast()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -31,12 +52,15 @@ public class VoxelGridManager : MonoBehaviour
                 if (hit.transform.tag == "Voxel")
                 {
                     GameObject hitObject = hit.transform.gameObject;
-                    var voxel = hitObject.GetComponent<VoxelTrigger>().AttachedVoxel;
+                    var voxel = hitObject.GetComponent<OldVoxelTrigger>().AttachedVoxel;
 
                     voxel.ToggleNeighbours();
                 }
             }
         }
     }
+    
 }
+
+   
 
