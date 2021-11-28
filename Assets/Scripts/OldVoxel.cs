@@ -10,6 +10,7 @@ public class OldVoxel
     private GameObject _goVoxelTrigger;
     private OldVoxelGrid _grid;
     private bool _alive;
+    public int Counter;
 
     public bool Alive
     {
@@ -51,9 +52,10 @@ public class OldVoxel
 
     }
 
-    public OldVoxel(Vector3Int index, OldVoxelGrid grid)
+    public OldVoxel(int x, int y, int z, OldVoxelGrid grid, int counter)
     {
-        Index = index;
+        Counter = counter;
+        Index = new Vector3Int( x, 0, z) ;
         _grid = grid;
         CreateGameobject();
         Alive = true;
@@ -61,10 +63,11 @@ public class OldVoxel
 
     public void CreateGameobject()
     {
+        Vector3Int Index1 = Index + new Vector3Int(0, Counter, 0);
         _goVoxelTrigger = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        _goVoxelTrigger.name = $"Voxel {Index}";
+        _goVoxelTrigger.name = $"Voxel {Index1}";
         _goVoxelTrigger.tag = "Voxel";
-        _goVoxelTrigger.transform.position = Index;
+        _goVoxelTrigger.transform.position = Index1;
         _goVoxelTrigger.transform.localScale = Vector3.one * 0.95f;
         OldVoxelTrigger trigger = _goVoxelTrigger.AddComponent<OldVoxelTrigger>();
         trigger.AttachedVoxel = this;

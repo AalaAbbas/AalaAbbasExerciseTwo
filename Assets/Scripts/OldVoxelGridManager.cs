@@ -6,13 +6,19 @@ public class OldVoxelGridManager : MonoBehaviour
 {
     [SerializeField]
     private Vector3Int _gridDimensions = new Vector3Int(10, 1, 10);
-    private OldVoxelGrid _grid;
+    
     [SerializeField]
     public float prob = 0.3f;
 
+    private OldVoxelGrid startGrid;
+    private OldVoxelGrid prevGrid;
+    public int counter = 1;
+
     void Start()
     {
-        _grid = new OldVoxelGrid(_gridDimensions, prob);
+        startGrid = new OldVoxelGrid(_gridDimensions, prob);
+        prevGrid = startGrid;
+        counter++; 
     }
 
     void Update()
@@ -38,7 +44,11 @@ public class OldVoxelGridManager : MonoBehaviour
 
     public void Next()
     {
-        _grid.GOF();
+        OldVoxelGrid curGrid  = new OldVoxelGrid(_gridDimensions, prevGrid, counter);
+        curGrid.GOF();
+
+        prevGrid = curGrid;
+        counter++;
     }
 
     public void PerformRaycast()
